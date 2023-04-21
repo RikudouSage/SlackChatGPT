@@ -1,0 +1,2 @@
+rikudou_dynamo_db_cache:
+    replace_default_adapter: true

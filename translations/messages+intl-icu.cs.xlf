@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="cs" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="znw29.N" resname="Sorry, we don't know how to handle that command.">
+        <source>Sorry, we don't know how to handle that command.</source>
+        <target>Pardon, tenhle příkaz zpracovat neumíme.</target>
+      </trans-unit>
+      <trans-unit id="SojWw_b" resname="You must provide the mode to change to, either '{mode1}' or '{mode2}'">
+        <source>You must provide the mode to change to, either '{mode1}' or '{mode2}'</source>
+        <target>Musíte zadat mód, na který se má bot přepnout, buď ''{mode1}'', nebo ''{mode2}''</target>
+      </trans-unit>
+      <trans-unit id="4fgj.oz" resname="The mode was already set to '{mode}'">
+        <source>The mode was already set to '{mode}'</source>
+        <target>Režim už byl nastaven na ''{mode}''</target>
+      </trans-unit>
+      <trans-unit id="lqdg2tB" resname="The response mode has been changed by {user}.">
+        <source>The response mode has been changed by {user}.</source>
+        <target>Režim odpovědi byl změněn uživatelem {user}.</target>
+      </trans-unit>
+      <trans-unit id="SjgMOna" resname="I will now respond to all messages.">
+        <source>I will now respond to all messages.</source>
+        <target>Nyní budu odpovídat na všechny zprávy.</target>
+      </trans-unit>
+      <trans-unit id="X6UD2P8" resname="I will now only respond to direct @ mentions and threads I'm already mentioned in.">
+        <source>I will now only respond to direct @ mentions and threads I'm already mentioned in.</source>
+        <target>Nyní budu odpovídat pouze na přímé @ zmínky a ve vláknech, jichž už jsem součástí.</target>
+      </trans-unit>
+      <trans-unit id="sDwAsPv" resname="You must provide the mode to change to, either '{mode1}' or '{mode2}'. The current mode is '{currentMode}'.">
+        <source>You must provide the mode to change to, either '{mode1}' or '{mode2}'. The current mode is '{currentMode}'.</source>
+        <target>Musíte uvést režím, buď ''{mode1}'', nebo ''{mode2}''. Součásný režím je ''{currentMode}''.</target>
+      </trans-unit>
+      <trans-unit id="1FHSp54" resname="Hi there!">
+        <source>Hi there!</source>
+        <target>Zdravíčko!</target>
+      </trans-unit>
+      <trans-unit id="C.3rD44" resname="I'll respond to your messages if you mention me. You can also configure me to respond to every message in this channel by using the slash command '{command}'">
+        <source>I'll respond to your messages if you mention me. You can also configure me to respond to every message in this channel by using the slash command '{command}'</source>
+        <target>Budu odpovídat na vaše dotazy, pokud mě zmíníte. Můžete mě taky nastavit, abych odpovídal na všechny zprávy v tomto kanálu pomocí příkazu ''{command}'</target>
+      </trans-unit>
+      <trans-unit id="rCy683n" resname="I'll respond to all your messages in this channel. You can also configure me to respond only to direct mentions by using the slash command '{command}'">
+        <source>I'll respond to all your messages in this channel. You can also configure me to respond only to direct mentions by using the slash command '{command}'</source>
+        <target>Budu odpovídat na všechny zprávy v tomto kanálu. Můžete mě taky nastavit, abych odpovídal jen, když mě ve zprávě zmíníte, pomocí příkazu ''{command}''</target>
+      </trans-unit>
+      <trans-unit id="hX8ZzqK" resname="Invalid argument '{argument}', it must be '{mode1}' or '{mode2}'">
+        <source>Invalid argument '{argument}', it must be '{mode1}' or '{mode2}'</source>
+        <target>Neplátná možnost ''{argument}'', musí být buď ''{mode1}'', nebo ''{mode2}''</target>
+      </trans-unit>
+      <trans-unit id="HF_cxyC" resname="The global limit for messages per day has been reached, I sadly won't be responding to any more messages.">
+        <source>The global limit for messages per day has been reached, I sadly won't be responding to any more messages.</source>
+        <target>Byl překročen celkový limit pro počet zpráv za den, na další zprávy bohužel nebudu odpovídat.</target>
+      </trans-unit>
+      <trans-unit id="_BG2NRQ" resname="You have reached the daily limit of messages for your account, I sadly won't be responding to any more messages from you.">
+        <source>You have reached the daily limit of messages for your account, I sadly won't be responding to any more messages from you.</source>
+        <target>Dosáhli jste denního limitu zpráv pro váš účet, bohužel už na vaše zprávy odpovídat nebudu.</target>
+      </trans-unit>
+      <trans-unit id="TMJrpYJ" resname="The api key you provided is not valid.">
+        <source>The api key you provided is not valid.</source>
+        <target>Zadaný api klíč není platný.</target>
+      </trans-unit>
+      <trans-unit id="dLmjQ0N" resname="Usage: {command} [apiKey]">
+        <source>Usage: {command} [apiKey]</source>
+        <target>Použití: {command} [apiKlíč]</target>
+      </trans-unit>
+      <trans-unit id="OFmx785" resname="Your api key has been successfully saved and usage limits won't apply to you anymore. To delete it run: {command} remove">
+        <source>Your api key has been successfully saved and usage limits won't apply to you anymore. To delete it run: {command} remove</source>
+        <target>Váš api klíč byl úspěšně uložen a limity pro používání se na vás již nevztahují. Pro jeho smazání použijte: {command} remove</target>
+      </trans-unit>
+      <trans-unit id="xLnbaOA" resname="Your custom api key has been removed.">
+        <source>Your custom api key has been removed.</source>
+        <target>Váš vlastní api klíč byl odstraněn.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

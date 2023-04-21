@@ -1,3 +1,4 @@
+/.idea
 
 ###> symfony/framework-bundle ###
 /.env.local
@@ -8,3 +9,12 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+
+###> bref/symfony-bridge ###
+/.serverless/
+###< bref/symfony-bridge ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+###< friendsofphp/php-cs-fixer ###

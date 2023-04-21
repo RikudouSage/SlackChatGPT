@@ -1,0 +1,12 @@
+framework:
+  rate_limiter:
+    messages:
+      cache_pool: rikudou.dynamo_cache.cache
+      policy: sliding_window
+      limit: '%app.rate_limit.per_user%'
+      interval: 1 day
+    global_messages:
+      cache_pool: rikudou.dynamo_cache.cache
+      policy: sliding_window
+      limit: '%app.rate_limit.global%'
+      interval: 1 day

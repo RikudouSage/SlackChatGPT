@@ -1,0 +1,8 @@
+rikudou_dynamo_db_cache:
+    table: '%env(DYNAMODB_CACHE_TABLE)%'
+    # Use DynamoDB by default for cache & sessions
+    replace_default_adapter: false
+    client_config:
+        region: '%env(AWS_REGION)%'
+    encoder:
+        service: App\Service\Base64CacheItemEncoder

@@ -4,6 +4,16 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.signing_secret: '%env(SLACK_SIGNING_SECRET)%'
+    app.bot_token: '%env(resolve:SLACK_BOT_TOKEN)%'
+    app.openai_api_key: '%env(OPENAI_API_KEY)%'
+    app.dynamo.channel_mode_table: '%env(CHANNEL_MODES_TABLE)%'
+    app.chatgpt.system_message: '%env(CHAT_GPT_SYSTEM_MESSAGE)%'
+    app.bot.default_channel_mode: '%env(DEFAULT_CHANNEL_MODE)%'
+    app.bot.welcome_message: '%env(WELCOME_MESSAGE)%'
+    app.rate_limit.per_user: '%env(int:PER_USER_DAILY_LIMIT)%'
+    app.rate_limit.global: '%env(int:TOTAL_DAILY_LIMIT)%'
+    app.dynamo.user_settings_table: '%env(USER_SETTINGS_TABLE)%'
 
 services:
     # default configuration for services in *this* file
@@ -22,3 +32,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    Bref\Symfony\Messenger\Service\Sqs\SqsConsumer:
+        public: true
+        arguments:
+            $transportName: 'async'
+            $partialBatchFailure: false
+
+    AsyncAws\DynamoDb\DynamoDbClient:
+        arguments:
+            - region: '%env(AWS_REGION)%'
