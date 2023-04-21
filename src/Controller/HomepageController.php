@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Enum\ChannelMode;
+use App\OpenAi\OpenAiClient;
 use App\Slack\SlackApi;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -22,6 +23,7 @@ final class HomepageController extends AbstractController
         #[Autowire(value: '%app.signing_secret%')] string $signingSecret,
         #[Autowire(value: '%app.bot.default_channel_mode%')] string $channelMode,
         SlackApi $slackApi,
+        OpenAiClient $openAiClient,
     ): JsonResponse {
         $hasOpenAiApiKey = !!$openAiApiKey;
         $hasDynamoTable = !!$dynamoTable;
@@ -30,6 +32,7 @@ final class HomepageController extends AbstractController
         $hasSigningSecret = !!$signingSecret;
         $channelModeValid = ChannelMode::tryFrom($channelMode) !== null;
         $slackTokenValid = false;
+        $openAiApiKeyValid = false;
 
         if ($hasBotToken) {
             try {
@@ -39,13 +42,25 @@ final class HomepageController extends AbstractController
                 // ignore
             }
         }
+        if ($hasOpenAiApiKey) {
+            $openAiApiKeyValid = $openAiClient->isApiKeyValid($openAiApiKey);
+        }
 
-        $allOk = $hasOpenAiApiKey && $hasDynamoTable && $hasSystemMessage && $hasBotToken && $hasSigningSecret && $slackTokenValid && $channelModeValid;
+        $allOk = $hasOpenAiApiKey
+            && $hasDynamoTable
+            && $hasSystemMessage
+            && $hasBotToken
+            && $hasSigningSecret
+            && $slackTokenValid
+            && $channelModeValid
+            && $openAiApiKeyValid
+        ;
 
         return new JsonResponse([
             'status' => $allOk ? 'ok' : 'error',
             'details' => [
                 'openAiApiKey' => $hasOpenAiApiKey ? 'ok' : 'error',
+                'openAiApiKeyValid' => $openAiApiKeyValid ? 'ok' : 'error',
                 'channelModeDynamoDbTable' => $hasDynamoTable ? 'ok' : 'error',
                 'gptModelSystemMessage' => $hasSystemMessage ? 'ok' : 'error',
                 'slackBotToken' => $hasBotToken ? 'ok' : 'error',
