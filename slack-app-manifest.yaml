@@ -1,10 +1,11 @@
 display_information:
-  name: ChatGPT
+  name: ChatGPT # The name of the app itself
 features:
   bot_user:
-    display_name: ChatGPT
-    always_online: true
+    display_name: ChatGPT # The name of the bot that communicates with people. I recommend having app name and bot name the same
+    always_online: true # Shows the bot as if it's online
   slash_commands:
+    # Commands defined here must be forwarded to the commands endpoint. You may delete any command you don't wish to have in your workspace.
     - command: /chatgpt
       url: [baseUrl]/[language]/slack/commands
       description: Change bot response mode
@@ -18,20 +19,20 @@ features:
 oauth_config:
   scopes:
     bot:
-      - app_mentions:read
-      - channels:history
-      - channels:read
-      - chat:write
-      - im:history
-      - im:read
-      - im:write
-      - commands
+      - app_mentions:read # respond to direct mentions
+      - channels:history # read history of a channel, needed to be able to have a conversation with multiple messages
+      - channels:read # read some basic information about the channel
+      - chat:write # general permission to allow writing messages as the bot user
+      - im:history # read private conversation between a user and this bot
+      - im:read # read some basic information about the private conversation
+      - im:write # start a new private conversation
+      - commands # slash commands, if you don't use any of them, you may delete this
 settings:
   event_subscriptions:
     request_url: [baseUrl]/[language]/slack/events
     bot_events:
-      - message.channels
-      - message.im
+      - message.channels # get notified about events in channels the bot is part of, you may delete this if you want the bot to only respond to private messages
+      - message.im # get notified about private messages between a user and this bot
   org_deploy_enabled: false
   socket_mode_enabled: false
   token_rotation_enabled: false
