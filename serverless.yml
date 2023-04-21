@@ -88,6 +88,8 @@ resources:
     Resources:
         Queue:
             Type: AWS::SQS::Queue
+            Properties:
+                VisibilityTimeout: 120
         ChannelModesTable:
             Type: AWS::DynamoDB::Table
             Properties:
