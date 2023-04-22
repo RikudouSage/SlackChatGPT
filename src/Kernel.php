@@ -4,6 +4,7 @@ namespace App;
 
 use App\Attribute\SlackEventHandler;
 use App\Attribute\SlashCommandHandler;
+use App\DependencyInjection\CompilerPass\ChangeAppModeCompilerPass;
 use Bref\SymfonyBridge\BrefKernel;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\ChildDefinition;
@@ -15,6 +16,7 @@ class Kernel extends BrefKernel
 
     protected function build(ContainerBuilder $container): void
     {
+        $container->addCompilerPass(new ChangeAppModeCompilerPass());
         $container->registerAttributeForAutoconfiguration(
             SlackEventHandler::class,
             static function (ChildDefinition $definition, SlackEventHandler $attribute): void {

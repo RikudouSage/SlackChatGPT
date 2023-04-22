@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.mode: '%env(APP_MODE)%'
     app.signing_secret: '%env(SLACK_SIGNING_SECRET)%'
     app.bot_token: '%env(resolve:SLACK_BOT_TOKEN)%'
     app.openai_api_key: '%env(OPENAI_API_KEY)%'
@@ -14,6 +15,10 @@ parameters:
     app.rate_limit.per_user: '%env(int:PER_USER_DAILY_LIMIT)%'
     app.rate_limit.global: '%env(int:TOTAL_DAILY_LIMIT)%'
     app.dynamo.user_settings_table: '%env(USER_SETTINGS_TABLE)%'
+    app.dynamo.cache_table: '%env(DYNAMODB_CACHE_TABLE)%'
+    app.redis.host: '%env(REDIS_HOST)%'
+    app.messenger.dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+    app.slack.validate_signature: '%env(bool:VALIDATE_SIGNATURE)%'
 
 services:
     # default configuration for services in *this* file
@@ -42,3 +47,10 @@ services:
     AsyncAws\DynamoDb\DynamoDbClient:
         arguments:
             - region: '%env(AWS_REGION)%'
+
+    Redis:
+        class: Redis
+        calls:
+            - connect: ['%app.redis.host%']
+
+    app.cache.service: '@rikudou.dynamo_cache.cache'

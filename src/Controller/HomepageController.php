@@ -17,7 +17,6 @@ final class HomepageController extends AbstractController
     #[Route('/', name: 'app.status')]
     public function status(
         #[Autowire(value: '%app.openai_api_key%')] string $openAiApiKey,
-        #[Autowire(value: '%app.dynamo.channel_mode_table%')] string $dynamoTable,
         #[Autowire(value: '%app.chatgpt.system_message%')] string $systemMessage,
         #[Autowire(value: '%app.bot_token%')] string $botToken,
         #[Autowire(value: '%app.signing_secret%')] string $signingSecret,
@@ -26,7 +25,6 @@ final class HomepageController extends AbstractController
         OpenAiClient $openAiClient,
     ): JsonResponse {
         $hasOpenAiApiKey = !!$openAiApiKey;
-        $hasDynamoTable = !!$dynamoTable;
         $hasSystemMessage = !!$systemMessage;
         $hasBotToken = !!$botToken;
         $hasSigningSecret = !!$signingSecret;
@@ -47,7 +45,6 @@ final class HomepageController extends AbstractController
         }
 
         $allOk = $hasOpenAiApiKey
-            && $hasDynamoTable
             && $hasSystemMessage
             && $hasBotToken
             && $hasSigningSecret
@@ -61,7 +58,6 @@ final class HomepageController extends AbstractController
             'details' => [
                 'openAiApiKey' => $hasOpenAiApiKey ? 'ok' : 'error',
                 'openAiApiKeyValid' => $openAiApiKeyValid ? 'ok' : 'error',
-                'channelModeDynamoDbTable' => $hasDynamoTable ? 'ok' : 'error',
                 'gptModelSystemMessage' => $hasSystemMessage ? 'ok' : 'error',
                 'slackBotToken' => $hasBotToken ? 'ok' : 'error',
                 'slackBotTokenValid' => $slackTokenValid ? 'ok' : 'error',

@@ -61,6 +61,8 @@ configuration file and thus changing them in `.env.local` has no effect.
 | `DYNAMODB_CACHE_TABLE`    | The name of the DynamoDB table used for cache. Rate limiting is also tracked in this table. Defaults to a table created during deploy.                                                                                                                                               | No                              |
 | `USER_SETTINGS_TABLE`     | The name of the DynamoDB table used for user settings. Currently only custom api key for each user if they provide their own. Defaults to a table created during deploy.                                                                                                             | No                              |
 | `LOCK_DSN`                | A dsn for implementation of locks. Locks are pretty much ignored because the worst that can happen is an user gains a few more messages. If you want, you can read about [`symfony/lock`](https://symfony.com/doc/current/lock.html) in the documentation and implement it yourself. | Yes                             |
+| `APP_MODE`                | One of preconfigured app modes, currently either `aws-serverless` or `redis`. After changing this, you must clear the cache before anything changes. Don't deploy using serverless in any other mode than `aws-serverless`.                                                          | Yes                             |
+| `REDIS_HOST`              | Ignored for serverless deployment, used when `APP_MODE` is set to `redis`                                                                                                                                                                                                            | Yes                             |
 
 ## Deploying
 
@@ -173,3 +175,36 @@ And if you feel generous, you can open a pull request with your translations and
 ## Removing
 
 If you want to remove this bot from your AWS account, it's as simple as running: `serverless remove`.
+
+## Deploying somewhere else
+
+If you don't want to deploy to AWS, it's a little more involved than just running one command, but I'll always try
+to make it easy to deploy anywhere.
+
+For convenience, you can switch the app between multiple modes where services will be enabled and disabled based
+on the mode, you can switch the mode by setting the `APP_MODE` env variable to one of the supported values
+(see [App\Enum\AppMode](src/Enum/AppMode.php) for available values).
+
+You can also set the APP_MODE to an empty string, in which case you have to configure everything yourself, which
+makes sense if your setup is more exotic.
+
+For deploying outside AWS, I recommend setting the `APP_MODE` to `redis`, setting `REDIS_HOST` to a correct value
+and either building using the provided [Dockerfiles](docker/redis-mode) or manually deploying on a server
+having PHP 8.2 installed (you can check the required extensions by running `composer check-platform-reqs`).
+Note that if you deploy without using Docker you also need to run the Symfony messenger consuming the `async` transport,
+and ensure that ít doesn't fail.
+
+Read more in the [Symfony documentation](https://symfony.com/doc/current/messenger.html).
+
+### Building the docker files
+
+There are two Dockerfiles to be built in Redis mode — the api and the worker.
+
+API: `docker build -f docker/redis-mode/api.Dockerfile -t slack-chat-gpt-api .`
+
+Worker: `docker build -f docker/redis-mode/worker.Dockerfile -t slack-chat-gpt-worker .`
+
+The API image runs the webserver on port 80, map it to whatever port you want.
+
+Note that the worker will exit from time to time when it consumes too much memory;
+your orchestration tool should be prepared to restart the container.

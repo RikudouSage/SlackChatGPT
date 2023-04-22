@@ -1,5 +1,5 @@
 rikudou_dynamo_db_cache:
-    table: '%env(DYNAMODB_CACHE_TABLE)%'
+    table: '%app.dynamo.cache_table%'
     # Use DynamoDB by default for cache & sessions
     replace_default_adapter: false
     client_config:

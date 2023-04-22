@@ -9,11 +9,15 @@ final readonly class DefaultSlackRequestValidator implements SlackRequestValidat
 {
     public function __construct(
         #[Autowire(value: '%app.signing_secret%')] private string $slackSigningSecret,
+        #[Autowire(value: '%app.slack.validate_signature%')] private bool $validateSignatureEnabled,
     ) {
     }
 
     public function isRequestValid(Request $request): bool
     {
+        if (!$this->validateSignatureEnabled) {
+            return true;
+        }
         $content = $request->getContent() ?: http_build_query($request->request->all());
 
         $version = 'v0';
