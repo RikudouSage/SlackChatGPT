@@ -14,6 +14,7 @@ This is an **unofficial** self-hosted Slack bot for ChatGPT.
 - Deploys to AWS using the serverless framework
 - It doesn't cost anything when not in use — everything is serverless, and you only pay as you go
   - It uses AWS Lambda, DynamoDB, SQS and Secrets Manager
+  - Alternatively, Dockerfiles are provided for you to host anywhere you want
 
 Currently supported languages:
 
