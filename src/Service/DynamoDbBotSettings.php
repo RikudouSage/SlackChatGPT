@@ -14,6 +14,8 @@ final readonly class DynamoDbBotSettings implements BotSettings
     public function __construct(
         #[Autowire(value: '%app.dynamo.channel_mode_table%')]
         private string $tableName,
+        #[Autowire(value: '%app.bot.default_channel_mode%')]
+        private string $defaultChannelMode,
         private DynamoDbClient $dynamoDb,
     ) {
     }
@@ -40,7 +42,7 @@ final readonly class DynamoDbBotSettings implements BotSettings
         ]))->getItem();
 
         if (!count($result)) {
-            return ChannelMode::MentionsOnly;
+            return ChannelMode::from($this->defaultChannelMode);
         }
 
         return ChannelMode::from((string) $result['mode']->getS());
