@@ -8,7 +8,7 @@ use AsyncAws\DynamoDb\Input\PutItemInput;
 use AsyncAws\DynamoDb\ValueObject\AttributeValue;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-final class DefaultUserSettings implements UserSettings
+final class DynamoDbUserSettings implements UserSettings
 {
     public function __construct(
         #[Autowire(value: '%app.dynamo.user_settings_table%')]
