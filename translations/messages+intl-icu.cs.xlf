@@ -73,6 +73,34 @@
         <source>Your custom api key has been removed.</source>
         <target>Váš vlastní api klíč byl odstraněn.</target>
       </trans-unit>
+      <trans-unit id="ce4YB7S" resname="Sadly ChatGPT didn't reply in time, maybe their servers are too busy?">
+        <source>Sadly ChatGPT didn't reply in time, maybe their servers are too busy?</source>
+        <target>ChatGPT bohužel neodpověděl včas, možná jsou jejich servery příliš zaneprázdněné?</target>
+      </trans-unit>
+      <trans-unit id="Mq2TMaS" resname="Do you want to try again?">
+        <source>Do you want to try again?</source>
+        <target>Chcete to zkusit znovu?</target>
+      </trans-unit>
+      <trans-unit id="haOas0X" resname="Yes">
+        <source>Yes</source>
+        <target>Ano</target>
+      </trans-unit>
+      <trans-unit id="HqRCoTS" resname="No">
+        <source>No</source>
+        <target>Ne</target>
+      </trans-unit>
+      <trans-unit id="OKKi2be" resname="Ok, I won't retry sending the message.">
+        <source>Ok, I won't retry sending the message.</source>
+        <target>Dobře, zprávu znovu posílat nebudu.</target>
+      </trans-unit>
+      <trans-unit id="2adMZoK" resname="Ok, I'll retry sending the message.">
+        <source>Ok, I'll retry sending the message.</source>
+        <target>Dobře, pošlu zprávu znovu.</target>
+      </trans-unit>
+      <trans-unit id="HTDI7oI" resname="Your message has been sent again!">
+        <source>Your message has been sent again!</source>
+        <target>Vaše zpráva byla znovu odeslána!</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

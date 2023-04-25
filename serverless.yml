@@ -59,7 +59,7 @@ functions:
             - ${bref:layer.console} # The "console" layer
     worker:
         handler: bin/consumer.php
-        timeout: 120 # in seconds
+        timeout: 121 # in seconds
         reservedConcurrency: 5 # max. 5 messages processed in parallel
         layers:
             - ${bref:layer.php-82}

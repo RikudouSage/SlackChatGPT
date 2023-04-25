@@ -79,6 +79,7 @@ final readonly class SlackIncomingMessageHandler
             channelId: $channelId,
             parentTs: $event->event->threadTs ?? $event->event->ts,
             userId: $event->event->userId,
+            threadExists: $event->event->threadTs !== null,
         );
 
         if ($shouldSendReply) {

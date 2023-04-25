@@ -9,6 +9,7 @@ final readonly class ReplyToSlackMessage
         public string $channelId,
         public ?string $parentTs,
         public string $userId,
+        public bool $threadExists,
     ) {
     }
 }

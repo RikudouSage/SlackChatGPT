@@ -31,22 +31,27 @@ Configuration is done using environment variables in `.env.local` file.
 Note that if you don't use the provided serverless configuration to deploy to AWS, you may provide the environment variables
 in any way you want.
 
-| **Environment variable**  | **Description**                                                                                                                                                                                                                                                   |
-|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SLACK_SIGNING_SECRET`\*  | Secret used for validation of incoming requests. Provided in Slack developer portal.                                                                                                                                                                              |
-| `SLACK_BOT_TOKEN`\*       | Token used for communication with Slack api. Provided in Slack developer portal.                                                                                                                                                                                  |
-| `OPENAI_API_KEY`          | API key for communication with GPT model.                                                                                                                                                                                                                         |
-| `AWS_REGION`              | The region you run the bot in, automatically provided by AWS Lambda, but useful to set manually for local testing.                                                                                                                                                |
-| `CHAT_GPT_SYSTEM_MESSAGE` | The (invisible) instruction that is sent to the AI model at the start of each conversation. Defaults to: **You are a chatbot in a company's Slack workspace available to the company's employees to help with everything they ask.**                              |
-| `DEFAULT_CHANNEL_MODE`    | A value from the [`App\Enum\ChannelMode`](src/Enum/ChannelMode.php) enum. When set to `mentions`, bot only responds to direct mentions and threads it's already part of. When set to `all`, bot responds to all messages in the channel. Default is **mentions**. |
-| `WELCOME_MESSAGE`         | A message the bots sends upon being invited to a channel. If left empty a default message which includes information about the mode it runs in and how to change it gets sent.                                                                                    |
-| `PER_USER_DAILY_LIMIT`    | A limit for message count for every user individually. If the limit is reached, the bot lets the user know. Defaults to `-1` which means no limit.                                                                                                                |
-| `TOTAL_DAILY_LIMIT`       | Global message limit. If the limit is reached no further messages will be sent to AI model. The bot lets the user know that the limit has been reached.                                                                                                           |
+| **Environment variable**                 | **Description**                                                                                                                                                                                                                                                   |
+|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `SLACK_SIGNING_SECRET`&ast;              | Secret used for validation of incoming requests. Provided in Slack developer portal.                                                                                                                                                                              |
+| `SLACK_BOT_TOKEN`&ast;                   | Token used for communication with Slack api. Provided in Slack developer portal.                                                                                                                                                                                  |
+| `OPENAI_API_KEY`                         | API key for communication with GPT model.                                                                                                                                                                                                                         |
+| `OPENAI_TIMEOUT`&ast;&ast;               | The timeout in seconds before the message is considered lost. If this timeout is reached the bot will send an ephemeral message to the user. Should be a number between 1 and 120 (both inclusive). Defaults to 60 seconds.                                       |
+| `AWS_REGION`                             | The region you run the bot in, automatically provided by AWS Lambda, but useful to set manually for local testing.                                                                                                                                                |
+| `CHAT_GPT_SYSTEM_MESSAGE`&ast;&ast;&ast; | The (invisible) instruction that is sent to the AI model at the start of each conversation. Defaults to: **You are a chatbot in a company's Slack workspace available to the company's employees to help with everything they ask.**                              |
+| `DEFAULT_CHANNEL_MODE`                   | A value from the [`App\Enum\ChannelMode`](src/Enum/ChannelMode.php) enum. When set to `mentions`, bot only responds to direct mentions and threads it's already part of. When set to `all`, bot responds to all messages in the channel. Default is **mentions**. |
+| `WELCOME_MESSAGE`                        | A message the bots sends upon being invited to a channel. If left empty a default message which includes information about the mode it runs in and how to change it gets sent.                                                                                    |
+| `PER_USER_DAILY_LIMIT`                   | A limit for message count for every user individually. If the limit is reached, the bot lets the user know. Defaults to `-1` which means no limit.                                                                                                                |
+| `TOTAL_DAILY_LIMIT`                      | Global message limit. If the limit is reached no further messages will be sent to AI model. The bot lets the user know that the limit has been reached.                                                                                                           |
 
 &ast; You won't have these before you create a Slack app, it's okay to deploy without these first and redeploy once you have them.
 
-> Note: OpenAI mentions that the GPT model doesn't really pay strong attention to the system message, so it may be
-> hit-and-miss whether your instruction is respected or not.
+&ast;&ast;
+If you need the limit to be greater than 120 seconds,
+you must also edit the `serverless.yml` file and change the worker function timeout to some larger number.
+
+&ast;&ast;&ast; OpenAI mentions that the GPT-3.5 model doesn't really pay strong attention to the system message,
+so it may be hit-and-miss whether your instruction is respected or not.
 
 There are other environment variables which are set automatically and don't need to be changed. Some of them are provided in serverless
 configuration file and thus changing them in `.env.local` has no effect.

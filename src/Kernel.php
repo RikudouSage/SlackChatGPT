@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Attribute\SlackEventHandler;
+use App\Attribute\SlackInteractiveMessageHandler;
 use App\Attribute\SlashCommandHandler;
 use App\DependencyInjection\CompilerPass\ChangeAppModeCompilerPass;
 use Bref\SymfonyBridge\BrefKernel;
@@ -27,6 +28,12 @@ class Kernel extends BrefKernel
             SlashCommandHandler::class,
             static function (ChildDefinition $definition, SlashCommandHandler $attribute): void {
                 $definition->addTag('app.slack.slash_command_handler', ['command' => $attribute->name]);
+            }
+        );
+        $container->registerAttributeForAutoconfiguration(
+            SlackInteractiveMessageHandler::class,
+            static function (ChildDefinition $definition, SlackInteractiveMessageHandler $attribute): void {
+                $definition->addTag('app.slack.interactive_message_handler', ['id' => $attribute->id]);
             }
         );
     }

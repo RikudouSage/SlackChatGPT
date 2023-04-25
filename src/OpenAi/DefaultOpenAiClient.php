@@ -13,6 +13,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
     public function __construct(
         private HttpClientInterface $httpClient,
         #[Autowire('%app.openai_api_key%')] private string $apiKey,
+        #[Autowire('%app.openai.timeout%')] private int $timeout,
     ) {
     }
 
@@ -31,6 +32,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
                     $messages,
                 ),
             ],
+            'timeout' => $this->timeout,
         ]);
 
         $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);

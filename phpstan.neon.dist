@@ -5,5 +5,5 @@ parameters:
     consoleApplicationLoader: tests/console-application.php
   ignoreErrors:
     # This is checked by constructor parameters being typed anyway
-    - '#Parameter .+ of class App\\Dto\\(Authorization|MessageEvent|SlackEvent|SlashCommandEvent|SlackConversationReply) constructor expects .+, mixed given#'
+    - '#Parameter .+ of class App\\Dto\\(Authorization|MessageEvent|SlackEvent|SlashCommandEvent|SlackConversationReply|InteractiveCommandEvent) constructor expects .+, mixed given#'
     - '#Parameter \#1 \$value of static method App\\Enum\\ChannelType::from\(\) expects int\|string, mixed given#'

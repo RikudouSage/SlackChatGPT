@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Attribute\SlackEventHandler;
+use App\Attribute\SlackInteractiveMessageHandler;
 use App\Attribute\SlashCommandHandler;
 use App\Service\AttributeLocator;
 use App\Slack\SlackEndpointValidator;
@@ -21,12 +22,15 @@ final class SlackController extends AbstractController
     /**
      * @param iterable<callable&object> $eventHandlers
      * @param iterable<callable&object> $commandHandlers
+     * @param iterable<callable&object> $interactiveMessageHandlers
      */
     public function __construct(
         #[TaggedIterator('app.slack.event_handler')]
         private readonly iterable $eventHandlers,
         #[TaggedIterator('app.slack.slash_command_handler')]
         private readonly iterable $commandHandlers,
+        #[TaggedIterator('app.slack.interactive_message_handler')]
+        private readonly iterable $interactiveMessageHandlers,
     ) {
     }
 
@@ -107,6 +111,47 @@ final class SlackController extends AbstractController
                 'response_type' => 'ephemeral',
                 'text' => $translator->trans("Sorry, we don't know how to handle that command."),
             ]);
+        }
+
+        return new Response(status: Response::HTTP_OK);
+    }
+
+    #[Route('/slack/interactivity', name: 'app.slack.interactivity')]
+    #[Route('/{_locale}/slack/interactivity', name: 'app.slack.interactivity.locale')]
+    public function interactivity(
+        SlackRequestValidator $requestValidator,
+        AttributeLocator $attributeLocator,
+        Request $request,
+    ): Response {
+        if (!$requestValidator->isRequestValid($request)) {
+            throw new BadRequestHttpException('The request has an invalid signature.');
+        }
+
+        $payload = $request->request->get('payload');
+        assert(is_string($payload));
+        $event = json_decode($payload, true);
+        assert(is_array($event));
+        $handled = false;
+        foreach ($this->interactiveMessageHandlers as $handler) {
+            $attribute = $attributeLocator->getAttribute($handler, SlackInteractiveMessageHandler::class);
+            if ($attribute->id !== $event['callback_id']) {
+                continue;
+            }
+            $response = $handler($event);
+            if ($response !== null) {
+                return new JsonResponse([
+                    'text' => $response,
+                    'response_type' => 'ephemeral',
+                ], status: Response::HTTP_OK);
+            }
+            $handled = true;
+        }
+
+        if (!$handled) {
+            error_log((string) json_encode([
+                'error' => 'No handler found for interactive message',
+                'payload' => $event,
+            ]));
         }
 
         return new Response(status: Response::HTTP_OK);

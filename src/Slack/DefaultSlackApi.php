@@ -2,6 +2,7 @@
 
 namespace App\Slack;
 
+use App\Dto\SlackButtons;
 use App\Dto\SlackConversationReply;
 use DateInterval;
 use Psr\Cache\CacheItemPoolInterface;
@@ -72,7 +73,7 @@ final readonly class DefaultSlackApi implements SlackApi
         }
     }
 
-    public function postMessage(string $text, string $channelId, ?string $parentTs): void
+    public function postMessage(string $text, string $channelId, ?string $parentTs, ?SlackButtons $buttons = null): void
     {
         $json = [
             'channel' => $channelId,
@@ -82,7 +83,70 @@ final readonly class DefaultSlackApi implements SlackApi
             $json['thread_ts'] = $parentTs;
         }
 
+        if ($buttons !== null && count($buttons->buttons)) {
+            $json['attachments'] = [];
+            $attachment = [
+                'text' => $buttons->text,
+                'callback_id' => $buttons->id,
+                'attachment_type' => 'default',
+                'actions' => [],
+            ];
+            if ($buttons->color !== null) {
+                $attachment['color'] = $buttons->color;
+            }
+            foreach ($buttons->buttons as $button) {
+                $attachment['actions'][] = [
+                    'name' => $button->id,
+                    'text' => $button->text,
+                    'type' => 'button',
+                    'value' => $button->value,
+                ];
+            }
+            $json['attachments'][] = $attachment;
+        }
+
         $this->httpClient->request(Request::METHOD_POST, 'https://slack.com/api/chat.postMessage', [
+            'headers' => [
+                'Authorization' => "Bearer {$this->token}",
+            ],
+            'json' => $json,
+        ]);
+    }
+
+    public function postEphemeralMessage(string $text, string $channelId, string $userId, ?string $parentTs, ?SlackButtons $buttons = null): void
+    {
+        $json = [
+            'channel' => $channelId,
+            'text' => $text,
+            'user' => $userId,
+        ];
+        if ($parentTs !== null) {
+            $json['thread_ts'] = $parentTs;
+        }
+
+        if ($buttons !== null && count($buttons->buttons)) {
+            $json['attachments'] = [];
+            $attachment = [
+                'text' => $buttons->text,
+                'callback_id' => $buttons->id,
+                'attachment_type' => 'default',
+                'actions' => [],
+            ];
+            if ($buttons->color !== null) {
+                $attachment['color'] = $buttons->color;
+            }
+            foreach ($buttons->buttons as $button) {
+                $attachment['actions'][] = [
+                    'name' => $button->id,
+                    'text' => $button->text,
+                    'type' => 'button',
+                    'value' => $button->value,
+                ];
+            }
+            $json['attachments'][] = $attachment;
+        }
+
+        $this->httpClient->request(Request::METHOD_POST, 'https://slack.com/api/chat.postEphemeral', [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}",
             ],
@@ -115,5 +179,20 @@ final readonly class DefaultSlackApi implements SlackApi
         $this->cache->save($cacheItem);
 
         return $userId;
+    }
+
+    public function postEphemeralReply(string $responseUrl, string $text = '', bool $replaceOriginal = true, bool $deleteOriginal = false): void
+    {
+        $this->httpClient->request(Request::METHOD_POST, $responseUrl, [
+            'headers' => [
+                'Authorization' => "Bearer {$this->token}",
+            ],
+            'json' => [
+                'response_type' => 'ephemeral',
+                'text' => $text,
+                'replace_original' => $replaceOriginal,
+                'delete_original' => $deleteOriginal,
+            ],
+        ]);
     }
 }

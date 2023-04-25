@@ -31,6 +31,7 @@ final readonly class ReplyToSlackMessageIfMentionedInThreadHandler
                     channelId: $event->message->channelId,
                     parentTs: $event->message->parentTs,
                     userId: $event->message->userId,
+                    threadExists: $event->message->threadExists,
                 ));
                 break;
             }
