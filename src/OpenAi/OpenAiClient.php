@@ -19,6 +19,20 @@ interface OpenAiClient
         ?string $organizationId = null,
     ): string;
 
+    /**
+     * @param array<ChatGptMessage> $messages
+     *
+     * @throws TimeoutException
+     *
+     * @return iterable<string>
+     */
+    public function streamChatResponse(
+        array $messages,
+        ?string $apiKey = null,
+        ?string $model = null,
+        ?string $organizationId = null,
+    ): iterable;
+
     public function isApiKeyValid(string $apiKey, ?string $organizationId = null): bool;
 
     /**

@@ -73,7 +73,7 @@ final readonly class DefaultSlackApi implements SlackApi
         }
     }
 
-    public function postMessage(string $text, string $channelId, ?string $parentTs, ?SlackButtons $buttons = null): void
+    public function postMessage(string $text, string $channelId, ?string $parentTs, ?SlackButtons $buttons = null): string
     {
         $json = [
             'channel' => $channelId,
@@ -105,12 +105,16 @@ final readonly class DefaultSlackApi implements SlackApi
             $json['attachments'][] = $attachment;
         }
 
-        $this->httpClient->request(Request::METHOD_POST, 'https://slack.com/api/chat.postMessage', [
+        $response = $this->httpClient->request(Request::METHOD_POST, 'https://slack.com/api/chat.postMessage', [
             'headers' => [
                 'Authorization' => "Bearer {$this->token}",
             ],
             'json' => $json,
         ]);
+        $jsonResponse = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        assert(is_array($jsonResponse));
+
+        return $jsonResponse['ts'];
     }
 
     public function postEphemeralMessage(string $text, string $channelId, string $userId, ?string $parentTs, ?SlackButtons $buttons = null): void
@@ -192,6 +196,20 @@ final readonly class DefaultSlackApi implements SlackApi
                 'text' => $text,
                 'replace_original' => $replaceOriginal,
                 'delete_original' => $deleteOriginal,
+            ],
+        ]);
+    }
+
+    public function updateMessage(string $text, string $ts, string $channelId): void
+    {
+        $this->httpClient->request(Request::METHOD_POST, 'https://slack.com/api/chat.update', [
+            'headers' => [
+                'Authorization' => "Bearer {$this->token}",
+            ],
+            'json' => [
+                'channel' => $channelId,
+                'text' => $text,
+                'ts' => $ts,
             ],
         ]);
     }

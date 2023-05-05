@@ -7,6 +7,7 @@ use App\Dto\SlackButton;
 use App\Dto\SlackButtons;
 use App\Dto\SlackConversationReply;
 use App\Enum\ChatGptMessageRole;
+use App\Enum\ReplyMode;
 use App\Message\PostMessageToSlack;
 use App\Message\ReplyToSlackMessage;
 use App\OpenAi\OpenAiClient;
@@ -30,6 +31,8 @@ final readonly class ReplyToSlackMessageHandler
         private TranslatorInterface $translator,
         #[Autowire(value: '%app.chatgpt.system_message%')]
         private string $systemMessage,
+        #[Autowire('%app.bot.reply_mode%')]
+        private ReplyMode $replyMode,
     ) {
     }
 
@@ -49,17 +52,27 @@ final readonly class ReplyToSlackMessageHandler
         $messages[] = new ChatGptMessage(role: ChatGptMessageRole::User, content: $newMessage->message);
 
         try {
-            $gptResponse = $this->openAiClient->getChatResponse(
-                messages: $messages,
-                apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
-                model: $this->userSettings->getUserAiModel($newMessage->userId),
-                organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
-            );
-            $this->messageBus->dispatch(new PostMessageToSlack(
-                message: $gptResponse,
-                channelId: $newMessage->channelId,
-                parentTs: $newMessage->parentTs,
-            ));
+            if ($this->replyMode === ReplyMode::AllAtOnce) {
+                $gptResponse = $this->openAiClient->getChatResponse(
+                    messages: $messages,
+                    apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
+                    model: $this->userSettings->getUserAiModel($newMessage->userId),
+                    organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
+                );
+
+                $this->messageBus->dispatch(new PostMessageToSlack(
+                    message: $gptResponse,
+                    channelId: $newMessage->channelId,
+                    parentTs: $newMessage->parentTs,
+                ));
+            } else {
+                $this->handleChunksResponse($this->openAiClient->streamChatResponse(
+                    messages: $messages,
+                    apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
+                    model: $this->userSettings->getUserAiModel($newMessage->userId),
+                    organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
+                ), $newMessage);
+            }
         } catch (TimeoutException) {
             $this->messageBus->dispatch(new PostMessageToSlack(
                 message: $this->translator->trans("Sadly ChatGPT didn't reply in time, maybe their servers are too busy?"),
@@ -73,6 +86,39 @@ final readonly class ReplyToSlackMessageHandler
                     yes: new SlackButton(RetrySendMessageHandler::RESULT_YES, $this->translator->trans('Yes'), json_encode($newMessage, flags: JSON_THROW_ON_ERROR)),
                     no: new SlackButton(RetrySendMessageHandler::RESULT_NO, $this->translator->trans('No'), json_encode($newMessage, flags: JSON_THROW_ON_ERROR)),
                 ),
+            ));
+        }
+    }
+
+    /**
+     * @param iterable<string> $chunks
+     */
+    private function handleChunksResponse(iterable $chunks, ReplyToSlackMessage $newMessage): void
+    {
+        $interval = 1.5;
+
+        $ts = null;
+        $fullText = '';
+        $lastTick = 0;
+        foreach ($chunks as $chunk) {
+            $fullText .= $chunk;
+            $now = microtime(true);
+            if ($now - $lastTick > $interval) {
+                if ($ts === null) {
+                    $ts = $this->slackApi->postMessage("{$fullText}...", $newMessage->channelId, $newMessage->parentTs);
+                } else {
+                    $this->slackApi->updateMessage("{$fullText}...", $ts, $newMessage->channelId);
+                }
+                $lastTick = microtime(true);
+            }
+        }
+        if ($ts) {
+            $this->slackApi->updateMessage($fullText, $ts, $newMessage->channelId);
+        } else {
+            $this->messageBus->dispatch(new PostMessageToSlack(
+                message: $fullText,
+                channelId: $newMessage->channelId,
+                parentTs: $newMessage->parentTs,
             ));
         }
     }
