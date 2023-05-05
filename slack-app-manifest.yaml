@@ -14,7 +14,12 @@ features:
     - command: /chatgpt-api-key
       url: [baseUrl]/[language]/slack/commands
       description: Provide your own api key
-      usage_hint: "[apiKey]"
+      usage_hint: "[apiKey] [organizationId]"
+      should_escape: false
+    - command: /chatgpt-model
+      url: [baseUrl]/[language]/slack/commands
+      description: Change the model you use
+      usage_hint: "[model|status]"
       should_escape: false
 oauth_config:
   scopes:
