@@ -15,4 +15,9 @@ interface OpenAiClient
     public function getChatResponse(array $messages, ?string $apiKey = null): string;
 
     public function isApiKeyValid(string $apiKey): bool;
+
+    /**
+     * @return iterable<string>
+     */
+    public function getAvailableModels(?string $apiKey = null): iterable;
 }

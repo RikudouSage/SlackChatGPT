@@ -43,6 +43,8 @@ in any way you want.
 | `WELCOME_MESSAGE`                        | A message the bots sends upon being invited to a channel. If left empty a default message which includes information about the mode it runs in and how to change it gets sent.                                                                                    |
 | `PER_USER_DAILY_LIMIT`                   | A limit for message count for every user individually. If the limit is reached, the bot lets the user know. Defaults to `-1` which means no limit.                                                                                                                |
 | `TOTAL_DAILY_LIMIT`                      | Global message limit. If the limit is reached no further messages will be sent to AI model. The bot lets the user know that the limit has been reached.                                                                                                           |
+| `OPENAI_MODEL`                           | The model to use. Use the command `app:openai:models`&ast;&ast;&ast;&ast; to list available models. Defaults to `gpt-3.5-turbo`                                                                                                                                   |
+| `OPENAI_ORGANIZATION_ID`                 | The organization ID to use. If left empty, the default organization will be used. Defaults to empty string.                                                                                                                                                       |
 
 &ast; You won't have these before you create a Slack app, it's okay to deploy without these first and redeploy once you have them.
 
@@ -52,6 +54,10 @@ you must also edit the `serverless.yml` file and change the worker function time
 
 &ast;&ast;&ast; OpenAI mentions that the GPT-3.5 model doesn't really pay strong attention to the system message,
 so it may be hit-and-miss whether your instruction is respected or not.
+
+&ast;&ast;&ast;&ast; You can run the command locally (`php bin/console app:openai:models`) or using docker
+(`docker run --rm -it -v $(pwd):/SlackChatGPT -w /SlackChatGPT rikudousage/php-composer:8.2 bin/console app:openai:models`)
+or on the deployed app using serverless (`serverless bref:cli --args="app:openai:models"`).
 
 There are other environment variables which are set automatically and don't need to be changed. Some of them are provided in serverless
 configuration file and thus changing them in `.env.local` has no effect.
