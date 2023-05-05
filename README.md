@@ -123,7 +123,7 @@ After configuring the `.env.local` according to the section above you can procee
 16. Go to `App Home` -> `Show Tabs` and check `Allow users to send Slash commands and messages from the messages tab` if you want to allow users to send direct messages to the bot
 17. Test by writing a private message to the bot (if you enabled it in step 16)
 18. Invite the bot to any channel you want (by mentioning it by its name which is @ChatGPT by default)
-19. Test out the commands `/chatgpt` and `/chatgpt-api-key` if you enabled them
+19. Test out the commands `/chatgpt`,  `/chatgpt-api-key` and `/chatgpt-model` if you enabled them
 20. Test out that the bot responds when you mention it in the channel (or to every message if you've changed the mode)
 21. Do any other changes you want, like setting a logo for the bot and so on
 
