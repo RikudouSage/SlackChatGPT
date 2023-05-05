@@ -14,6 +14,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         private HttpClientInterface $httpClient,
         #[Autowire('%app.openai_api_key%')] private string $apiKey,
         #[Autowire('%app.openai.timeout%')] private int $timeout,
+        #[Autowire('%app.openai.model%')] private string $model,
     ) {
     }
 
@@ -26,7 +27,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
                 'Authorization' => "Bearer {$apiKey}",
             ],
             'json' => [
-                'model' => 'gpt-3.5-turbo',
+                'model' => $this->model,
                 'messages' => array_map(
                     static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
                     $messages,
