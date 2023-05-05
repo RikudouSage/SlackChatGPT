@@ -21,6 +21,7 @@ parameters:
     app.slack.validate_signature: '%env(bool:VALIDATE_SIGNATURE)%'
     app.openai.timeout: '%env(int:OPENAI_TIMEOUT)%'
     app.openai.model: '%env(OPENAI_MODEL)%'
+    app.openai.organization_id: '%env(OPENAI_ORGANIZATION_ID)%'
 
 services:
     # default configuration for services in *this* file

@@ -15,6 +15,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         #[Autowire('%app.openai_api_key%')] private string $apiKey,
         #[Autowire('%app.openai.timeout%')] private int $timeout,
         #[Autowire('%app.openai.model%')] private string $model,
+        #[Autowire('%app.openai.organization_id%')] private string $organizationId,
     ) {
     }
 
@@ -22,10 +23,14 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
     {
         $apiKey ??= $this->apiKey;
 
+        $headers = [
+            'Authorization' => "Bearer {$apiKey}",
+        ];
+        if ($this->organizationId) {
+            $headers['OpenAI-Organization'] = $this->organizationId;
+        }
         $response = $this->httpClient->request(Request::METHOD_POST, 'https://api.openai.com/v1/chat/completions', [
-            'headers' => [
-                'Authorization' => "Bearer {$apiKey}",
-            ],
+            'headers' => $headers,
             'json' => [
                 'model' => $this->model,
                 'messages' => array_map(
