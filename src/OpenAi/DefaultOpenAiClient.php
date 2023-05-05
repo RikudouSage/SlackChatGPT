@@ -25,6 +25,15 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         ?string $model = null,
         ?string $organizationId = null
     ): string {
+        return implode('', [...$this->streamChatResponse($messages, $apiKey, $model, $organizationId)]);
+    }
+
+    public function streamChatResponse(
+        array $messages,
+        ?string $apiKey = null,
+        ?string $model = null,
+        ?string $organizationId = null
+    ): iterable {
         $apiKey ??= $this->apiKey;
         $model ??= $this->model;
         $organizationId ??= $this->organizationId;
@@ -43,14 +52,33 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
                     static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
                     $messages,
                 ),
+                'stream' => true,
             ],
             'timeout' => $this->timeout,
         ]);
+        $chunks = $this->httpClient->stream($response);
+        foreach ($chunks as $chunk) {
+            $content = trim(substr($chunk->getContent(), strlen('data: ')));
+            if (!$content) {
+                continue;
+            }
 
-        $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
-        assert(is_array($json));
+            $parts = explode('data: ', $content);
+            foreach ($parts as $part) {
+                $part = trim($part);
+                if ($part === '[DONE]') {
+                    break 2;
+                }
+                $json = json_decode($part, true, flags: JSON_THROW_ON_ERROR);
+                assert(is_array($json));
+                $text = $json['choices'][0]['delta']['content'] ?? null;
+                if ($text === null) {
+                    continue;
+                }
 
-        return $json['choices'][0]['message']['content'];
+                yield $text;
+            }
+        }
     }
 
     public function isApiKeyValid(string $apiKey, ?string $organizationId = null): bool

@@ -22,6 +22,7 @@ parameters:
     app.openai.timeout: '%env(int:OPENAI_TIMEOUT)%'
     app.openai.model: '%env(OPENAI_MODEL)%'
     app.openai.organization_id: '%env(OPENAI_ORGANIZATION_ID)%'
+    app.bot.reply_mode: '%env(enum:App\Enum\ReplyMode:REPLY_MODE)%'
 
 services:
     # default configuration for services in *this* file

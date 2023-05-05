@@ -45,6 +45,7 @@ in any way you want.
 | `TOTAL_DAILY_LIMIT`                      | Global message limit. If the limit is reached no further messages will be sent to AI model. The bot lets the user know that the limit has been reached.                                                                                                           |
 | `OPENAI_MODEL`                           | The model to use. Use the command `app:openai:models`&ast;&ast;&ast;&ast; to list available models. Defaults to `gpt-3.5-turbo`                                                                                                                                   |
 | `OPENAI_ORGANIZATION_ID`                 | The organization ID to use. If left empty, the default organization will be used. Defaults to empty string.                                                                                                                                                       |
+| `REPLY_MODE`                             | Must be `stream` or `all-at-once`. If set to stream, one message is continuously updated as parts of it are received from the AI model. If set to `all-at-once`, the message is only sent when it's whole. Default is `all-at-once`.                              |
 
 &ast; You won't have these before you create a Slack app, it's okay to deploy without these first and redeploy once you have them.
 

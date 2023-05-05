@@ -43,6 +43,7 @@ class Kernel extends BrefKernel
         if ($this->environment !== 'prod' && $this->isLambda()) {
             return '/tmp/cache/' . $this->environment;
         }
+
         return $this->getProjectDir() . '/var/cache/' . $this->environment;
     }
 }
