@@ -40,7 +40,7 @@ final readonly class SetApiKeySlashCommandHandler
         }
         $commands = array_map(static fn (string $item) => trim($item), explode(' ', $text));
         $apiKey = $commands[0];
-        $organizationId = $commands[1] ?? null;
+        $organizationId = $commands[1] ?? ''; // set empty organization ID to use the api key's default instead of workspace default
 
         if (!$this->openAiClient->isApiKeyValid($apiKey, $organizationId)) {
             return $this->translator->trans('The api key you provided is not valid.');
