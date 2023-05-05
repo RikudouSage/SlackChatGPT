@@ -26,22 +26,28 @@ final readonly class SetApiKeySlashCommandHandler
         $event = SlashCommandEvent::fromRawData($event);
 
         if (!trim($event->text)) {
-            return $this->translator->trans('Usage: {command} [apiKey]', [
+            return $this->translator->trans('Usage: {command} [apiKey] [organizationId]', [
                 '{command}' => $event->command,
             ]);
         }
 
-        $apiKey = trim($event->text);
-        if ($apiKey === 'remove') {
+        $text = trim($event->text);
+        if ($text === 'remove') {
             $this->userSettings->setUserApiKey($event->userId, null);
+            $this->userSettings->setUserOrganizationId($event->userId, null);
 
             return $this->translator->trans('Your custom api key has been removed.');
         }
-        if (!$this->openAiClient->isApiKeyValid($apiKey)) {
+        $commands = array_map(static fn (string $item) => trim($item), explode(' ', $text));
+        $apiKey = $commands[0];
+        $organizationId = $commands[1] ?? ''; // set empty organization ID to use the api key's default instead of workspace default
+
+        if (!$this->openAiClient->isApiKeyValid($apiKey, $organizationId)) {
             return $this->translator->trans('The api key you provided is not valid.');
         }
 
-        $this->userSettings->setUserApiKey($event->userId, $apiKey);
+        $this->userSettings->setUserApiKey($event->userId, $text);
+        $this->userSettings->setUserOrganizationId($event->userId, $organizationId);
 
         return $this->translator->trans("Your api key has been successfully saved and usage limits won't apply to you anymore. To delete it run: {command} remove", [
             '{command}' => $event->command,

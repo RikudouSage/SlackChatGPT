@@ -12,12 +12,17 @@ interface OpenAiClient
      *
      * @throws TimeoutException
      */
-    public function getChatResponse(array $messages, ?string $apiKey = null): string;
+    public function getChatResponse(
+        array $messages,
+        ?string $apiKey = null,
+        ?string $model = null,
+        ?string $organizationId = null,
+    ): string;
 
-    public function isApiKeyValid(string $apiKey): bool;
+    public function isApiKeyValid(string $apiKey, ?string $organizationId = null): bool;
 
     /**
      * @return iterable<string>
      */
-    public function getAvailableModels(?string $apiKey = null): iterable;
+    public function getAvailableModels(?string $apiKey = null, ?string $organizationId = null): iterable;
 }
