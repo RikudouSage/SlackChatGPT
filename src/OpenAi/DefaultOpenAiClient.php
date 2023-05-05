@@ -67,7 +67,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
             foreach ($parts as $part) {
                 $part = trim($part);
                 if ($part === '[DONE]') {
-                    break;
+                    break 2;
                 }
                 $json = json_decode($part, true, flags: JSON_THROW_ON_ERROR);
                 assert(is_array($json));
