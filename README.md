@@ -6,6 +6,7 @@ This is an **unofficial** self-hosted Slack bot for ChatGPT.
 
 - Reply to private messages
 - Reply to a channel (you can switch between replying to every comment and to @ mentions only)
+- Stream replies instead of waiting for the full message
 - Bot uses all messages in a thread to maintain context
 - Automatic validation of request signature — only valid requests from Slack are let through
 - Global and per user limits to control costs
