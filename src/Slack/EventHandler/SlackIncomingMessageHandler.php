@@ -53,6 +53,9 @@ final readonly class SlackIncomingMessageHandler
         $channelId = $event->event->channelId;
         $channelMode = $this->settings->getChannelMode($channelId);
         $text = $event->event->text;
+        if ($text === null || $event->event->userId === null) {
+            return;
+        }
 
         if ($error = $this->getRateLimitError($event)) {
             $this->messageBus->dispatch(new PostMessageToSlack(
@@ -91,6 +94,9 @@ final readonly class SlackIncomingMessageHandler
 
     private function getRateLimitError(SlackEvent $event): ?string
     {
+        if ($event->event->userId === null) {
+            return null;
+        }
         if ($this->userSettings->getUserApiKey($event->event->userId) !== null) {
             return null;
         }
