@@ -19,20 +19,26 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
     ) {
     }
 
-    public function getChatResponse(array $messages, ?string $apiKey = null): string
-    {
+    public function getChatResponse(
+        array $messages,
+        ?string $apiKey = null,
+        ?string $model = null,
+        ?string $organizationId = null
+    ): string {
         $apiKey ??= $this->apiKey;
+        $model ??= $this->model;
+        $organizationId ??= $this->organizationId;
 
         $headers = [
             'Authorization' => "Bearer {$apiKey}",
         ];
-        if ($this->organizationId) {
-            $headers['OpenAI-Organization'] = $this->organizationId;
+        if ($organizationId) {
+            $headers['OpenAI-Organization'] = $organizationId;
         }
         $response = $this->httpClient->request(Request::METHOD_POST, 'https://api.openai.com/v1/chat/completions', [
             'headers' => $headers,
             'json' => [
-                'model' => $this->model,
+                'model' => $model,
                 'messages' => array_map(
                     static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
                     $messages,
@@ -47,18 +53,32 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         return $json['choices'][0]['message']['content'];
     }
 
-    public function isApiKeyValid(string $apiKey): bool
+    public function isApiKeyValid(string $apiKey, ?string $organizationId = null): bool
     {
+        $organizationId ??= $this->organizationId;
+        $headers = [
+            'Authorization' => "Bearer {$apiKey}",
+        ];
+        if ($organizationId) {
+            $headers['OpenAI-Organization'] = $organizationId;
+        }
+
         return $this->httpClient->request(Request::METHOD_GET, 'https://api.openai.com/v1/models', [
-            'headers' => [
-                'Authorization' => "Bearer {$apiKey}",
-            ],
+            'headers' => $headers,
         ])->getStatusCode() === Response::HTTP_OK;
     }
 
-    public function getAvailableModels(?string $apiKey = null): iterable
+    public function getAvailableModels(?string $apiKey = null, ?string $organizationId = null): iterable
     {
         $apiKey ??= $this->apiKey;
+        $organizationId ??= $this->organizationId;
+
+        $headers = [
+            'Authorization' => "Bearer {$apiKey}",
+        ];
+        if ($organizationId) {
+            $headers['OpenAI-Organization'] = $organizationId;
+        }
 
         // filter for models that have chat capability, until OpenAI adds some endpoint, this is the only way sadly
         /** @var array<(callable(string $modelName): bool)> $filters */
@@ -67,9 +87,7 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         ];
 
         $response = $this->httpClient->request(Request::METHOD_GET, 'https://api.openai.com/v1/models', [
-            'headers' => [
-                'Authorization' => "Bearer {$apiKey}",
-            ],
+            'headers' => $headers,
         ]);
         $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
         assert(is_array($json));

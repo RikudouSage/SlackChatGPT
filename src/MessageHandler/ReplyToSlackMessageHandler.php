@@ -49,7 +49,12 @@ final readonly class ReplyToSlackMessageHandler
         $messages[] = new ChatGptMessage(role: ChatGptMessageRole::User, content: $newMessage->message);
 
         try {
-            $gptResponse = $this->openAiClient->getChatResponse($messages, $this->userSettings->getUserApiKey($newMessage->userId));
+            $gptResponse = $this->openAiClient->getChatResponse(
+                messages: $messages,
+                apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
+                model: $this->userSettings->getUserAiModel($newMessage->userId),
+                organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
+            );
             $this->messageBus->dispatch(new PostMessageToSlack(
                 message: $gptResponse,
                 channelId: $newMessage->channelId,

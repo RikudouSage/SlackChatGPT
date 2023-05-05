@@ -61,10 +61,6 @@
         <source>The api key you provided is not valid.</source>
         <target>Zadaný api klíč není platný.</target>
       </trans-unit>
-      <trans-unit id="dLmjQ0N" resname="Usage: {command} [apiKey]">
-        <source>Usage: {command} [apiKey]</source>
-        <target>Použití: {command} [apiKlíč]</target>
-      </trans-unit>
       <trans-unit id="OFmx785" resname="Your api key has been successfully saved and usage limits won't apply to you anymore. To delete it run: {command} remove">
         <source>Your api key has been successfully saved and usage limits won't apply to you anymore. To delete it run: {command} remove</source>
         <target>Váš api klíč byl úspěšně uložen a limity pro používání se na vás již nevztahují. Pro jeho smazání použijte: {command} remove</target>
@@ -100,6 +96,32 @@
       <trans-unit id="HTDI7oI" resname="Your message has been sent again!">
         <source>Your message has been sent again!</source>
         <target>Vaše zpráva byla znovu odeslána!</target>
+      </trans-unit>
+      <trans-unit id="6E7P0rm" resname="Usage: {command} [apiKey] [organizationId]">
+        <source>Usage: {command} [apiKey] [organizationId]</source>
+        <target>Použití: {command} [apiKlíč] [idOrganizace]</target>
+      </trans-unit>
+      <trans-unit id="DH49qo7" resname="Model '{model}' is not available. You must use one of: {models}">
+        <source>Model '{model}' is not available. You must use one of: {models}</source>
+        <target>Model '{model}' není k dispozici. Musíte zvolit jedno z: {models}</target>
+      </trans-unit>
+      <trans-unit id="ZinX3Y1" resname="The bot will from now on reply to you using the {model} model.">
+        <source>The bot will from now on reply to you using the {model} model.</source>
+        <target>Bot bude od teď odpovídat s použitím modelu {model}.</target>
+      </trans-unit>
+      <trans-unit id="AEPnrXM" resname="You are currently using the default model for this workspace, {model}.">
+        <source>You are currently using the default model for this workspace, {model}.</source>
+        <target>V současnosti používáte výchozí model pro tento workspace, {model}.</target>
+      </trans-unit>
+      <trans-unit id="zIC.2XQ" resname="You are currently using {model}, the workspace default is {defaultModel}.">
+        <source>You are currently using {model}, the workspace default is {defaultModel}.</source>
+        <target>V současnosti používáte {model}, výchozí nastavení pro workspace je {defaultModel}.</target>
+      </trans-unit>
+      <trans-unit id="0yCV3b5" resname="Usage: {command} [model|status]&#10;Where model is one of: {models}">
+        <source>Usage: {command} [model|status]
+Where model is one of: {models}</source>
+        <target>Použití: {command} [model|status]
+Kde model je jeden z: {models}</target>
       </trans-unit>
     </body>
   </file>
