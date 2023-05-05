@@ -69,7 +69,7 @@ final class DynamoDbUserSettings implements UserSettings
         if (!count($result)) {
             return null;
         }
-        if (array_key_exists($property, $result)) {
+        if (!array_key_exists($property, $result)) {
             return null;
         }
 
