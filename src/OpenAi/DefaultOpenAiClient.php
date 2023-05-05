@@ -55,4 +55,36 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
             ],
         ])->getStatusCode() === Response::HTTP_OK;
     }
+
+    public function getAvailableModels(?string $apiKey = null): iterable
+    {
+        $apiKey ??= $this->apiKey;
+
+        // filter for models that have chat capability, until OpenAI adds some endpoint, this is the only way sadly
+        /** @var array<(callable(string $modelName): bool)> $filters */
+        $filters = [
+            static fn (string $modelName) => str_starts_with($modelName, 'gpt'),
+        ];
+
+        $response = $this->httpClient->request(Request::METHOD_GET, 'https://api.openai.com/v1/models', [
+            'headers' => [
+                'Authorization' => "Bearer {$apiKey}",
+            ],
+        ]);
+        $json = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
+        assert(is_array($json));
+
+        foreach ($json['data'] as $model) {
+            $modelName = $model['id'];
+            assert(is_string($modelName));
+
+            foreach ($filters as $filter) {
+                if (!$filter($modelName)) {
+                    continue 2;
+                }
+            }
+
+            yield $modelName;
+        }
+    }
 }
