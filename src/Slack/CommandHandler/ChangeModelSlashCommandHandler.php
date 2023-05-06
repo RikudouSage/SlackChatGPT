@@ -54,8 +54,8 @@ final readonly class ChangeModelSlashCommandHandler
 
         if (!in_array($model, $availableModels, true)) {
             return $this->translator->trans("Model '{model}' is not available. You must use one of: {models}", [
-                'model' => $model,
-                'models' => implode(', ', $availableModels),
+                '{model}' => $model,
+                '{models}' => implode(', ', $availableModels),
             ]);
         }
 
