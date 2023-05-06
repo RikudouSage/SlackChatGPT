@@ -103,7 +103,7 @@
       </trans-unit>
       <trans-unit id="DH49qo7" resname="Model '{model}' is not available. You must use one of: {models}">
         <source>Model '{model}' is not available. You must use one of: {models}</source>
-        <target>Model '{model}' není k dispozici. Musíte zvolit jedno z: {models}</target>
+        <target>Model ''{model}'' není k dispozici. Musíte zvolit jedno z: {models}</target>
       </trans-unit>
       <trans-unit id="ZinX3Y1" resname="The bot will from now on reply to you using the {model} model.">
         <source>The bot will from now on reply to you using the {model} model.</source>
