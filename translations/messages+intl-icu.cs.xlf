@@ -123,6 +123,14 @@ Where model is one of: {models}</source>
         <target>Použití: {command} [model|status]
 Kde model je jeden z: {models}</target>
       </trans-unit>
+      <trans-unit id="ECIWQWn" resname="You're using a custom api key that is not valid, please provide a new one or switch to using the globally configured one.">
+        <source>You're using a custom api key that is not valid, please provide a new one or switch to using the globally configured one.</source>
+        <target>Používáte vlastní api klíč, který není validní, prosím použijte jiný nebo začněte požívat globální nastavení.</target>
+      </trans-unit>
+      <trans-unit id="K3nMNNk" resname="The api key this workspace is using is not valid, please contact your administrator.">
+        <source>The api key this workspace is using is not valid, please contact your administrator.</source>
+        <target>Api klíč, který používá tento workspace není validní, prosím kontaktujte svého administrátora.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

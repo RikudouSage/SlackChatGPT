@@ -15,7 +15,9 @@ use App\Service\UserSettings;
 use App\Slack\InteractiveMessageHandler\RetrySendMessageHandler;
 use App\Slack\SlackApi;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpClient\Exception\TimeoutException;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -87,6 +89,21 @@ final readonly class ReplyToSlackMessageHandler
                     no: new SlackButton(RetrySendMessageHandler::RESULT_NO, $this->translator->trans('No'), json_encode($newMessage, flags: JSON_THROW_ON_ERROR)),
                 ),
             ));
+        } catch (ClientException $e) {
+            if ($e->getCode() === Response::HTTP_UNAUTHORIZED) {
+                if ($this->userSettings->getUserApiKey($newMessage->userId) !== null) {
+                    $message = $this->translator->trans("You're using a custom api key that is not valid, please provide a new one or switch to using the globally configured one.");
+                } else {
+                    $message = $this->translator->trans("The api key this workspace is using is not valid, please contact your administrator.");
+                }
+                $this->messageBus->dispatch(new PostMessageToSlack(
+                    message: $message,
+                    channelId: $newMessage->channelId,
+                    parentTs: $newMessage->threadExists ? $newMessage->parentTs : null,
+                    ephemeralMessage: true,
+                    userId: $newMessage->userId,
+                ));
+            }
         }
     }
 
