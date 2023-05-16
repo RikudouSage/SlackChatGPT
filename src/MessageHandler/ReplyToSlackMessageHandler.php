@@ -103,6 +103,8 @@ final readonly class ReplyToSlackMessageHandler
                     ephemeralMessage: true,
                     userId: $newMessage->userId,
                 ));
+            } else {
+                throw $e;
             }
         }
     }
