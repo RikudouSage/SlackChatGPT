@@ -6,6 +6,7 @@ use App\Dto\SlackButtons;
 use App\Dto\SlackConversationReply;
 use DateInterval;
 use Psr\Cache\CacheItemPoolInterface;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -114,7 +115,7 @@ final readonly class DefaultSlackApi implements SlackApi
         $jsonResponse = json_decode($response->getContent(), true, flags: JSON_THROW_ON_ERROR);
         assert(is_array($jsonResponse));
 
-        return $jsonResponse['ts'];
+        return $jsonResponse['ts'] ?? throw new RuntimeException("The response contains no 'ts': " . json_encode($jsonResponse));
     }
 
     public function postEphemeralMessage(string $text, string $channelId, string $userId, ?string $parentTs, ?SlackButtons $buttons = null): void

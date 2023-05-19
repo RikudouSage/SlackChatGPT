@@ -8,6 +8,7 @@ use App\Dto\SlackButtons;
 use App\Dto\SlackConversationReply;
 use App\Enum\ChatGptMessageRole;
 use App\Enum\ReplyMode;
+use App\Exception\ContextTooLongException;
 use App\Message\PostMessageToSlack;
 use App\Message\ReplyToSlackMessage;
 use App\OpenAi\OpenAiClient;
@@ -68,12 +69,22 @@ final readonly class ReplyToSlackMessageHandler
                     parentTs: $newMessage->parentTs,
                 ));
             } else {
-                $this->handleChunksResponse($this->openAiClient->streamChatResponse(
-                    messages: $messages,
-                    apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
-                    model: $this->userSettings->getUserAiModel($newMessage->userId),
-                    organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
-                ), $newMessage);
+                try {
+                    $this->handleChunksResponse($this->openAiClient->streamChatResponse(
+                        messages: $messages,
+                        apiKey: $this->userSettings->getUserApiKey($newMessage->userId),
+                        model: $this->userSettings->getUserAiModel($newMessage->userId),
+                        organizationId: $this->userSettings->getUserOrganizationId($newMessage->userId),
+                    ), $newMessage);
+                } catch (ContextTooLongException) {
+                    $this->messageBus->dispatch(new PostMessageToSlack(
+                        message: $this->translator->trans("This conversation is over GPT's token limit, please start a new one."),
+                        channelId: $newMessage->channelId,
+                        parentTs: $newMessage->threadExists ? $newMessage->parentTs: null,
+                        ephemeralMessage: true,
+                        userId: $newMessage->userId,
+                    ));
+                }
             }
         } catch (TimeoutException) {
             $this->messageBus->dispatch(new PostMessageToSlack(

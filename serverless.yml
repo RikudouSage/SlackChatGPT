@@ -53,7 +53,7 @@ functions:
     # This function let us run console commands in Lambda
     console:
         handler: bin/console
-        timeout: 120 # in seconds
+        timeout: 240 # in seconds
         layers:
             - ${bref:layer.php-82} # PHP
             - ${bref:layer.console} # The "console" layer
@@ -89,7 +89,7 @@ resources:
         Queue:
             Type: AWS::SQS::Queue
             Properties:
-                VisibilityTimeout: 120
+                VisibilityTimeout: 240
         ChannelModesTable:
             Type: AWS::DynamoDB::Table
             Properties:

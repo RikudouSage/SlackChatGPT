@@ -37,7 +37,7 @@ in any way you want.
 | `SLACK_SIGNING_SECRET`&ast;              | Secret used for validation of incoming requests. Provided in Slack developer portal.                                                                                                                                                                              |
 | `SLACK_BOT_TOKEN`&ast;                   | Token used for communication with Slack api. Provided in Slack developer portal.                                                                                                                                                                                  |
 | `OPENAI_API_KEY`                         | API key for communication with GPT model.                                                                                                                                                                                                                         |
-| `OPENAI_TIMEOUT`&ast;&ast;               | The timeout in seconds before the message is considered lost. If this timeout is reached the bot will send an ephemeral message to the user. Should be a number between 1 and 120 (both inclusive). Defaults to 60 seconds.                                       |
+| `OPENAI_TIMEOUT`&ast;&ast;               | The timeout in seconds before the message is considered lost. If this timeout is reached the bot will send an ephemeral message to the user. Should be a number between 1 and 240 (both inclusive). Defaults to 60 seconds.                                       |
 | `AWS_REGION`                             | The region you run the bot in, automatically provided by AWS Lambda, but useful to set manually for local testing.                                                                                                                                                |
 | `CHAT_GPT_SYSTEM_MESSAGE`&ast;&ast;&ast; | The (invisible) instruction that is sent to the AI model at the start of each conversation. Defaults to: **You are a chatbot in a company's Slack workspace available to the company's employees to help with everything they ask.**                              |
 | `DEFAULT_CHANNEL_MODE`                   | A value from the [`App\Enum\ChannelMode`](src/Enum/ChannelMode.php) enum. When set to `mentions`, bot only responds to direct mentions and threads it's already part of. When set to `all`, bot responds to all messages in the channel. Default is **mentions**. |
@@ -51,7 +51,7 @@ in any way you want.
 &ast; You won't have these before you create a Slack app, it's okay to deploy without these first and redeploy once you have them.
 
 &ast;&ast;
-If you need the limit to be greater than 120 seconds,
+If you need the limit to be greater than 240 seconds,
 you must also edit the `serverless.yml` file and change the worker function timeout to some larger number.
 
 &ast;&ast;&ast; OpenAI mentions that the GPT-3.5 model doesn't really pay strong attention to the system message,

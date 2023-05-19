@@ -131,6 +131,10 @@ Kde model je jeden z: {models}</target>
         <source>The api key this workspace is using is not valid, please contact your administrator.</source>
         <target>Api klíč, který používá tento workspace není validní, prosím kontaktujte svého administrátora.</target>
       </trans-unit>
+      <trans-unit id="rZzmapL" resname="This conversation is over GPT's token limit, please start a new one.">
+        <source>This conversation is over GPT's token limit, please start a new one.</source>
+        <target>Tato konverzace je příliš dlouhá na limit tokenů GPT, prosím začněte novou.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
