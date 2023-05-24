@@ -17,6 +17,10 @@ final readonly class PostMessageToSlackHandler
 
     public function __invoke(PostMessageToSlack $message): void
     {
+        if (!$message->message) {
+            error_log('Empty message found, not sending');
+            return;
+        }
         if ($message->ephemeralMessage) {
             if ($message->userId === null) {
                 throw new LogicException('You must provide a user id when posting an ephemeral message.');
