@@ -53,13 +53,13 @@ functions:
     # This function let us run console commands in Lambda
     console:
         handler: bin/console
-        timeout: 240 # in seconds
+        timeout: 120 # in seconds
         layers:
             - ${bref:layer.php-82} # PHP
             - ${bref:layer.console} # The "console" layer
     worker:
         handler: bin/consumer.php
-        timeout: 120 # in seconds
+        timeout: 240 # in seconds
         reservedConcurrency: 5 # max. 5 messages processed in parallel
         layers:
             - ${bref:layer.php-82}
