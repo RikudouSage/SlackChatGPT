@@ -46,16 +46,17 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         if ($organizationId) {
             $headers['OpenAI-Organization'] = $organizationId;
         }
+        $requestBody = [
+            'model' => $model,
+            'messages' => array_map(
+                static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
+                $messages,
+            ),
+            'stream' => true,
+        ];
         $response = $this->httpClient->request(Request::METHOD_POST, 'https://api.openai.com/v1/chat/completions', [
             'headers' => $headers,
-            'json' => [
-                'model' => $model,
-                'messages' => array_map(
-                    static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
-                    $messages,
-                ),
-                'stream' => true,
-            ],
+            'json' => $requestBody,
             'timeout' => $this->timeout,
         ]);
         $chunks = $this->httpClient->stream($response);
@@ -87,6 +88,10 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
             if (($content['error']['code'] ?? '') === 'context_length_exceeded') {
                 throw new ContextTooLongException();
             } else {
+                $headersToPrint = $headers;
+                $headersToPrint['Authorization'] = substr($headersToPrint['Authorization'], 0, 15);
+                error_log(json_encode($headersToPrint));
+                error_log(json_encode($requestBody));
                 error_log($e->getResponse()->getStatusCode());
                 error_log($e->getResponse()->getContent(false));
             }
