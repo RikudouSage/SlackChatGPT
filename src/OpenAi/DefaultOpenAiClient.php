@@ -4,6 +4,7 @@ namespace App\OpenAi;
 
 use App\Dto\ChatGptMessage;
 use App\Exception\ContextTooLongException;
+use JsonException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpClient\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,7 +28,32 @@ final readonly class DefaultOpenAiClient implements OpenAiClient
         ?string $model = null,
         ?string $organizationId = null
     ): string {
-        return implode('', [...$this->streamChatResponse($messages, $apiKey, $model, $organizationId)]);
+        $apiKey ??= $this->apiKey;
+        $model ??= $this->model;
+        $organizationId ??= $this->organizationId;
+
+        $headers = [
+            'Authorization' => "Bearer {$apiKey}",
+        ];
+        if ($organizationId) {
+            $headers['OpenAI-Organization'] = $organizationId;
+        }
+        $requestBody = [
+            'model' => $model,
+            'messages' => array_map(
+                static fn (ChatGptMessage $message) => ['role' => $message->role->value, 'content' => $message->content],
+                $messages,
+            ),
+        ];
+        $response = $this->httpClient->request(Request::METHOD_POST, 'https://api.openai.com/v1/chat/completions', [
+            'headers' => $headers,
+            'json' => $requestBody,
+            'timeout' => $this->timeout,
+        ]);
+
+        $json = json_decode($response->getContent(), true);
+
+        return $json['choices'][0]['message']['content'];
     }
 
     public function streamChatResponse(
