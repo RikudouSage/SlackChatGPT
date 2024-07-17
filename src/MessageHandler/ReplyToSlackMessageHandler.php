@@ -34,8 +34,8 @@ final readonly class ReplyToSlackMessageHandler
         private TranslatorInterface $translator,
         #[Autowire(value: '%app.chatgpt.system_message%')]
         private string $systemMessage,
-        #[Autowire('%app.bot.reply_mode%')]
-        private ReplyMode $replyMode,
+//        #[Autowire('%app.bot.reply_mode%')]
+        private ReplyMode $replyMode = ReplyMode::AllAtOnce,
     ) {
     }
 
